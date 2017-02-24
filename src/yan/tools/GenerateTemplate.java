@@ -5,14 +5,14 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.VirtualFile;
 
 import java.io.File;
 
 /**
- * generate code from template
- * Created by yan on 2017/2/24.
+ * Created by yan on 2017/2/25.
  */
-public class GenerateCode extends AnAction {
+public class GenerateTemplate extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         String message = "Good Good Learn , Day Day Up !";
@@ -21,7 +21,7 @@ public class GenerateCode extends AnAction {
         File baseDir = new File(project.getBasePath());
 
         if (Generator.isTargetFile(currentFile)){
-            Generator.generateCode(currentFile, baseDir);
+            Generator.generateTemplate(currentFile, baseDir);
         }else {
             message = "Hi,this tools is for java or groovy file please open it first.";
         }
