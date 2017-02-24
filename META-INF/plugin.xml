@@ -39,7 +39,7 @@
   <actions>
       <group id="MyPlugin.YanTools" text="_YanTools" description="Yan's Tools">
           <add-to-group group-id="MainMenu" anchor="last"  />
-          <action id="YanTools.Generator" class="yan.tools.Generator" text="_Generate Code" description="Generate code by templates">
+          <action id="YanTools.Generator" class="yan.tools.GenerateCode" text="_Generate Code" description="Generate code by templates">
               <keyboard-shortcut keymap="$default" first-keystroke="alt shift G"/>
           </action>
       </group>

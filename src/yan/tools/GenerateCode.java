@@ -12,9 +12,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import java.util.List;
 
 /**
+ * generate code from template
  * Created by yan on 2017/2/24.
  */
-public class Generator extends AnAction {
+public class GenerateCode extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         String message = "Good Good Learn , Day Day Up !";
