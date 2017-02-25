@@ -1,6 +1,7 @@
 package yan.tools
 
 import groovy.text.SimpleTemplateEngine
+import yan.tools.util.ClassUtil
 
 import java.util.regex.Matcher
 
@@ -13,46 +14,50 @@ class Generator {
     private static GroovyClassLoader loader = new GroovyClassLoader()
 
     static generateTemplate(File source,File baseDir){
-        Class aClass = loader.parseClass(source)
-        File parentFile = source.parentFile.parentFile
-        parentFile.eachFileRecurse {
-            if (it.absolutePath == source.absolutePath) return
-            def relationPath = it.absolutePath.replace(parentFile.absolutePath,'')
-            def className = aClass.name
-            def i = className.lastIndexOf('.')
-            def packageName = className.substring(0,i),classShortName = className.substring(i+1),propertyName=classShortName[0].toLowerCase()+classShortName[1..-1]
-            if (relationPath.contains(classShortName)) relationPath = relationPath.replaceAll(classShortName,Matcher.quoteReplacement('${name}'))
+
+        log("Start generate template from : $source.absolutePath")
+
+        Class sourceClass = loader.parseClass(source)
+        File parentDir = new File(source.canonicalPath.substring(0,source.canonicalPath.lastIndexOf(ClassUtil.classPath(sourceClass))))
+        parentDir.eachFileRecurse {
+            if (it.canonicalPath == source.canonicalPath) return
+            def relationPath = it.canonicalPath.replaceAll(Matcher.quoteReplacement(parentDir.canonicalPath),'')
+            if (relationPath.contains(ClassUtil.shortName(sourceClass))) relationPath = relationPath.replaceAll(ClassUtil.shortName(sourceClass),Matcher.quoteReplacement('${name}'))
+            File targetFile = new File(baseDir,"/$TEMPLATE_DIR${relationPath}")
             if (it.directory){
-                new File(baseDir,"$TEMPLATE_DIR/${relationPath}").mkdirs()
+                targetFile.mkdirs()
             }else {
-                File targetFile = new File(baseDir,"$TEMPLATE_DIR/${relationPath}")
                 if (!targetFile.parentFile.exists()) targetFile.parentFile.mkdirs()
                 if (targetFile.exists()){
-                    println "File exist,do nothing"
+                    log("Exist file,pass : $targetFile.canonicalPath")
                 }else {
-                    targetFile << it.text.replaceAll(classShortName,Matcher.quoteReplacement('${name}')).replaceAll(propertyName,Matcher.quoteReplacement('${propertyName}'))
+                    log("Generate template to : $targetFile.canonicalPath")
+                    targetFile << it.text
+                            .replaceAll(ClassUtil.shortName(sourceClass),Matcher.quoteReplacement('${name}'))
+                            .replaceAll(ClassUtil.propertyName(sourceClass),Matcher.quoteReplacement('${propertyName}'))
                 }
             }
         }
     }
 
     static generateCode(File source,File baseDir){
-        Class aClass = loader.parseClass(source)
-        File parentFile = new File(baseDir,TEMPLATE_DIR)
-        parentFile.eachFileRecurse {
-            def relationPath = it.absolutePath.replace(parentFile.absolutePath,'')
-            def className = aClass.name
-            def i = className.lastIndexOf('.')
-            def packageName = className.substring(0,i),classShortName = className.substring(i+1),propertyName=classShortName[0].toLowerCase()+classShortName[1..-1]
-            if (relationPath.contains('${name}')) relationPath = relationPath.replaceAll('\\$\\{name\\}',classShortName)
-            def binding = [theClass:aClass,name:classShortName,propertyName:propertyName]
+
+        log("Start generate code from template for $source.absolutePath")
+
+        Class theClass = loader.parseClass(source)
+        File parentDir = new File(baseDir,TEMPLATE_DIR)
+        parentDir.eachFileRecurse {
+            def relationPath = it.canonicalPath.replaceAll(Matcher.quoteReplacement(parentDir.canonicalPath),'')
+            if (relationPath.contains('${name}')) relationPath = relationPath.replaceAll('\\$\\{name\\}',ClassUtil.shortName(theClass))
+            def binding = [theClass:theClass,name:ClassUtil.shortName(theClass),propertyName:ClassUtil.propertyName(theClass)]
+            File targetFile = new File(source.canonicalPath.substring(0,source.canonicalPath.lastIndexOf(ClassUtil.classPath(theClass))),relationPath)
             if (it.directory){
-                new File(source.parentFile.parentFile,relationPath).mkdirs()
+                targetFile.mkdirs()
             }else {
-                File targetFile = new File(source.parentFile.parentFile,relationPath)
                 if (targetFile.exists()){
-                    println "File exist，do nothing"
+                    log("Exist file,pass : $targetFile.canonicalPath")
                 }else {
+                    log("Generate code to : $targetFile.canonicalPath")
                     targetFile << engine.createTemplate(it).make(binding)
                 }
             }
@@ -61,5 +66,9 @@ class Generator {
 
     static boolean isTargetFile(File file){
         return file.name.endsWith(".java") || file.name.endsWith(".groovy")
+    }
+
+    static log(String s){
+        println s
     }
 }
