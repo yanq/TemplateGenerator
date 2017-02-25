@@ -2,11 +2,12 @@
   <id>yan.tools.generator</id>
   <name>Template Generator</name>
   <version>1.0</version>
-  <vendor email="37767856@qq.com" url="http://www.yourcompany.com">老闫出品</vendor>
+  <vendor email="37767856@qq.com" url="">老闫低调出品</vendor>
 
   <description><![CDATA[
       模板生成器。<br>
-      从示例项目生成模板，以及从模板生成项目。适用于多层大量骨架代码的项目，无论哪个方向的生成，都是以领域类为中心的。
+      从示例项目生成模板，以及从模板生成项目。适用于多层大量骨架代码的项目。<br>
+      无论哪个方向的生成，都是以领域类为中心的。
     ]]></description>
 
   <change-notes><![CDATA[
