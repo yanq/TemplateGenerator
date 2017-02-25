@@ -1,5 +1,6 @@
 package yan.tools
 
+import com.intellij.openapi.ui.Messages
 import groovy.text.SimpleTemplateEngine
 import yan.tools.util.ClassUtil
 
@@ -72,5 +73,6 @@ class Generator {
 
     static log(String s){
         println s
+        Messages.showInfoMessage(s,"Template Generator")
     }
 }

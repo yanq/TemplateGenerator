@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.VirtualFile;
 
 import java.io.File;
 
@@ -15,16 +16,22 @@ import java.io.File;
 public class GenerateCode extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
-        String message = "Good Good Learn , Day Day Up !";
+        String message = "Complete !";
         Project project = e.getData(PlatformDataKeys.PROJECT);
-        File currentFile = new File(e.getData(PlatformDataKeys.VIRTUAL_FILE).getCanonicalPath());
         File baseDir = new File(project.getBasePath());
 
-        if (Generator.isTargetFile(currentFile)){
-            Generator.generateCode(currentFile, baseDir);
+        VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
+        if (file.exists()){
+            File currentFile = new File(file.getCanonicalPath());
+            if (Generator.isTargetFile(currentFile)){
+                Generator.generateCode(currentFile, baseDir);
+            }else {
+                message = "Hi,this tools is for java or groovy file please open it first.";
+            }
         }else {
-            message = "Hi,this tools is for java or groovy file please open it first.";
+            message = "Please choose a java or groovy file first .";
         }
+
 
         if (!message.equals("")){
             Messages.showMessageDialog(project, message, "Information", Messages.getInformationIcon());

@@ -15,15 +15,20 @@ import java.io.File;
 public class GenerateTemplate extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
-        String message = "Good Good Learn , Day Day Up !";
+        String message = "Complete !";
         Project project = e.getData(PlatformDataKeys.PROJECT);
-        File currentFile = new File(e.getData(PlatformDataKeys.VIRTUAL_FILE).getCanonicalPath());
         File baseDir = new File(project.getBasePath());
 
-        if (Generator.isTargetFile(currentFile)){
-            Generator.generateTemplate(currentFile, baseDir);
+        VirtualFile file = e.getData(PlatformDataKeys.VIRTUAL_FILE);
+        if (file.exists()){
+            File currentFile = new File(file.getCanonicalPath());
+            if (Generator.isTargetFile(currentFile)){
+                Generator.generateTemplate(currentFile, baseDir);
+            }else {
+                message = "Hi,this tools is for java or groovy file please open it first.";
+            }
         }else {
-            message = "Hi,this tools is for java or groovy file please open it first.";
+            message = "Please choose a java or groovy file first .";
         }
 
         if (!message.equals("")){
