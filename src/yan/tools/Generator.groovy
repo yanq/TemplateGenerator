@@ -45,7 +45,7 @@ class Generator {
             def i = className.lastIndexOf('.')
             def packageName = className.substring(0,i),classShortName = className.substring(i+1),propertyName=classShortName[0].toLowerCase()+classShortName[1..-1]
             if (relationPath.contains('${name}')) relationPath = relationPath.replaceAll('\\$\\{name\\}',classShortName)
-            def binding = [class:aClass,name:classShortName,propertyName:propertyName]
+            def binding = [theClass:aClass,name:classShortName,propertyName:propertyName]
             if (it.directory){
                 new File(source.parentFile.parentFile,relationPath).mkdirs()
             }else {
