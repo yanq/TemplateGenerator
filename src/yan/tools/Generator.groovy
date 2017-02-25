@@ -35,7 +35,7 @@ class Generator {
                     log("Generate template to : $targetFile.canonicalPath")
                     targetFile << it.text
                             .replaceAll(ClassUtil.shortName(sourceClass),Matcher.quoteReplacement('${name}'))
-                            .replaceAll(ClassUtil.propertyName(sourceClass),Matcher.quoteReplacement('${propertyName}'))
+                            .replaceAll(ClassUtil.propertyName(sourceClass),Matcher.quoteReplacement('${propertyName}')).getBytes('utf-8')
                 }
             }
         }
@@ -60,7 +60,7 @@ class Generator {
                     log("Exist file,pass : $targetFile.canonicalPath")
                 }else {
                     log("Generate code to : $targetFile.canonicalPath")
-                    targetFile << engine.createTemplate(it).make(binding)
+                    targetFile << engine.createTemplate(it.text).make(binding).toString().getBytes('utf-8')
                 }
             }
         }
