@@ -17,6 +17,7 @@ class Generator {
 
         log("Start generate template from : $source.absolutePath")
 
+        ClassUtil.loadClassDir(source.parentFile,loader)
         Class sourceClass = loader.parseClass(source)
         File parentDir = new File(source.canonicalPath.substring(0,source.canonicalPath.lastIndexOf(ClassUtil.classPath(sourceClass))))
         parentDir.eachFileRecurse {
@@ -44,6 +45,7 @@ class Generator {
 
         log("Start generate code from template for $source.absolutePath")
 
+        ClassUtil.loadClassDir(source.parentFile,loader)
         Class theClass = loader.parseClass(source)
         File parentDir = new File(baseDir,TEMPLATE_DIR)
         parentDir.eachFileRecurse {
@@ -65,7 +67,7 @@ class Generator {
     }
 
     static boolean isTargetFile(File file){
-        return file.name.endsWith(".java") || file.name.endsWith(".groovy")
+        return ClassUtil.isJavaClass(file)
     }
 
     static log(String s){

@@ -27,6 +27,31 @@ class ClassUtil {
         aClass.name.split('\\.').join(File.separator)
     }
 
+    static void loadClassDir(File dir,GroovyClassLoader loader){
+        def allFiles = [:]
+        dir.listFiles().each {
+            println it
+            allFiles << [it:true]
+        }
+
+        allFiles.each {
+            allFiles.each {
+                if (it.value){
+                    try{
+                        loader.parseClass(it.key)
+                        it.value = false
+                    }catch (Exception e){
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+    }
+
+    static boolean isJavaClass(File file){
+        return file.name.endsWith(".java") || file.name.endsWith(".groovy")
+    }
+
     public static void main(String[] args) {
         Class aClass1 = String.class
         println shortName(aClass1)
@@ -42,5 +67,7 @@ class ClassUtil {
         println source.absolutePath
         println parentPath
         println source.canonicalPath.replaceAll(Matcher.quoteReplacement(parentPath),'')
+
+        loadClassDir(new File(parentPath))
     }
 }
