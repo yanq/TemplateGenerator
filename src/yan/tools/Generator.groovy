@@ -13,6 +13,10 @@ class Generator {
     static final TEMPLATE_DIR = 'template'
     private static SimpleTemplateEngine engine = new SimpleTemplateEngine()
     private static GroovyClassLoader loader = new GroovyClassLoader()
+    public static File logFile = File.createTempFile("GenerateLog",'txt')
+    static {
+        log("LogFile :$logFile.canonicalPath")
+    }
 
     static generateTemplate(File source,File baseDir){
 
@@ -72,7 +76,13 @@ class Generator {
     }
 
     static log(String s){
-        println s
-        Messages.showInfoMessage(s,"Template Generator")
+        def now = new Date().format("yyyy-MM-dd HH:mm:ss.SSS")
+        def message = "$now $s \n"
+        print message
+        logFile << message
+    }
+
+    static String logText(){
+        return logFile.text
     }
 }

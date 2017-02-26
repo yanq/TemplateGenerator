@@ -25,6 +25,7 @@ public class GenerateCode extends AnAction {
             File currentFile = new File(file.getCanonicalPath());
             if (Generator.isTargetFile(currentFile)){
                 Generator.generateCode(currentFile, baseDir);
+                Messages.showMessageDialog(project, Generator.logText(), "Information", Messages.getInformationIcon());
             }else {
                 message = "Hi,this tools is for java or groovy file please open it first.";
             }
